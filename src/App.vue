@@ -3,7 +3,7 @@ import { reactive } from 'vue'
 import Landscape from './components/Landscape.vue'
 
 const demoLandscape = reactive({
-  name: 'bauhaus',
+  name: 'landscape1',
   gradientColors: [
     '#C5B597',
     '#88704B',
@@ -21,27 +21,11 @@ const demoLandscape = reactive({
 </script>
 
 <template>
-  <div class="app-layout">
-    <main class="app-main">
+  <div
+    class="box-border flex min-h-screen flex-col bg-[#f0ebe3] antialiased selection:bg-neutral-900/15"
+  >
+    <main class="flex flex-1 items-center justify-center p-4 box-border">
       <Landscape :landscape-json="demoLandscape" />
     </main>
   </div>
 </template>
-
-<style scoped>
-.app-layout {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: var(--canvas-bg, #f0ebe3);
-}
-
-.app-main {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  box-sizing: border-box;
-}
-</style>

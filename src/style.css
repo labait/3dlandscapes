@@ -1,27 +1,2 @@
-:root {
-  --canvas-bg: #f0ebe3;
-
-  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  color-scheme: light;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-}
-
-code {
-  font-family: ui-monospace, monospace;
-}
-
-#app {
-  min-height: 100vh;
-  width: 100%;
-}
+@import 'tailwindcss';
+@source './**/*.{vue,js}';

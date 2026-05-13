@@ -247,11 +247,23 @@ function updateLabels(peaks) {
       obj.element.parentNode.removeChild(obj.element)
   }
   labelObjects = []
+  const wrapClass =
+    'relative flex -translate-x-1/2 -translate-y-full flex-col items-center'
+  const labelClass =
+    'whitespace-nowrap px-[8.4px] py-[1.4px] font-mono font-medium text-[15.4px] text-white/95 tracking-wide [text-shadow:0_1px_0_rgba(0,0,0,0.45),0_0_6px_rgba(0,0,0,0.35)]'
+  const lineClass = 'mt-px h-[25.2px] w-px shrink-0 bg-white/80'
   for (const peak of peaks) {
-    const div = document.createElement('div')
-    div.className = 'peak-label'
-    div.textContent = peak.name
-    const obj = new CSS2DObject(div)
+    const wrap = document.createElement('div')
+    wrap.className = wrapClass
+    const span = document.createElement('span')
+    span.className = labelClass
+    span.textContent = peak.name
+    const line = document.createElement('span')
+    line.className = lineClass
+    line.setAttribute('aria-hidden', 'true')
+    wrap.appendChild(span)
+    wrap.appendChild(line)
+    const obj = new CSS2DObject(wrap)
     obj.position.set(peak.x, peak.height + 6, peak.z)
     labelGroup.add(obj)
     labelObjects.push(obj)
@@ -624,25 +636,48 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="landscape-view">
-    <div v-if="state.landscape?.items?.length" ref="sceneWrap" class="canvas-wrap">
-      <div ref="sceneMount" class="scene-mount" />
-      <div ref="labelsMount" class="labels-mount" />
+  <div class="relative">
+    <div
+      v-if="state.landscape?.items?.length"
+      ref="sceneWrap"
+      class="relative mx-auto aspect-16/10 w-[min(92vw,1200px)] max-h-[min(76vh,720px)] rounded-xl bg-[#efe7d8] shadow-[0_12px_40px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.06)]"
+    >
+      <div ref="sceneMount" class="absolute inset-0" />
+      <div ref="labelsMount" class="pointer-events-none absolute inset-0" />
 
-      <header class="landscape-head">
-        <h1 class="title">{{ displayTitle }}</h1>
-        <p class="subtitle">3D Landscape Generator</p>
+      <header
+        class="pointer-events-none absolute left-0 top-0 z-20 p-4 px-5"
+      >
+        <h1
+          class="m-0 font-mono text-[1.375rem] font-bold tracking-tight text-white mix-blend-difference"
+        >
+          {{ displayTitle }}
+        </h1>
+        <p
+          class="mt-1.5 m-0 font-mono text-[10px] uppercase tracking-[0.28em] text-neutral-100 mix-blend-difference"
+        >
+          3D Landscape Generator
+        </p>
       </header>
 
-      <aside class="panel" @click.stop>
-        <div class="panel-heading">
-          <h2 class="panel-title">Options</h2>
+      <aside
+        class="absolute right-3 top-3 z-30 w-60 max-w-[42vw] rounded-2xl border border-black/10 bg-white/90 p-4 shadow-xl backdrop-blur-md"
+        @click.stop
+      >
+        <div class="mb-4">
+          <h2 class="m-0 font-mono text-sm font-semibold uppercase tracking-[0.2em] text-neutral-900">
+            Options
+          </h2>
         </div>
 
-        <div class="field">
-          <div class="field-row">
-            <label for="lw-baseWidth">Base width (avg)</label>
-            <span>{{ state.baseWidth }}</span>
+        <div class="mb-4">
+          <div
+            class="mb-1 flex items-baseline justify-between font-mono text-[11px]"
+          >
+            <label class="tracking-wide uppercase text-neutral-700" for="lw-baseWidth"
+              >Base width (avg)</label
+            >
+            <span class="text-xs text-neutral-900">{{ state.baseWidth }}</span>
           </div>
           <input
             id="lw-baseWidth"
@@ -651,15 +686,19 @@ onBeforeUnmount(() => {
             min="6"
             max="80"
             step="1"
-            class="slider"
+            class="w-full accent-[#f1b814]"
             @input="rebuildTerrain"
           />
         </div>
 
-        <div class="field">
-          <div class="field-row">
-            <label for="lw-maxHeight">Max peak height</label>
-            <span>{{ state.maxHeight }}</span>
+        <div class="mb-4">
+          <div
+            class="mb-1 flex items-baseline justify-between font-mono text-[11px]"
+          >
+            <label class="tracking-wide uppercase text-neutral-700" for="lw-maxHeight"
+              >Max peak height</label
+            >
+            <span class="text-xs text-neutral-900">{{ state.maxHeight }}</span>
           </div>
           <input
             id="lw-maxHeight"
@@ -668,15 +707,21 @@ onBeforeUnmount(() => {
             min="5"
             max="120"
             step="1"
-            class="slider"
+            class="w-full accent-[#f1b814]"
             @input="rebuildTerrain"
           />
         </div>
 
-        <div class="field">
-          <div class="field-row">
-            <label for="lw-peakRatio">Peak proportion ratio</label>
-            <span>{{ state.peakProportionRatio }}</span>
+        <div class="mb-4">
+          <div
+            class="mb-1 flex items-baseline justify-between font-mono text-[11px]"
+          >
+            <label class="tracking-wide uppercase text-neutral-700" for="lw-peakRatio"
+              >Peak proportion ratio</label
+            >
+            <span class="text-xs text-neutral-900">{{
+              state.peakProportionRatio
+            }}</span>
           </div>
           <input
             id="lw-peakRatio"
@@ -685,15 +730,19 @@ onBeforeUnmount(() => {
             min="1"
             max="10"
             step="1"
-            class="slider"
+            class="w-full accent-[#f1b814]"
             @input="rebuildTerrain"
           />
         </div>
 
-        <div class="field">
-          <div class="field-row">
-            <label for="lw-co">Color offset</label>
-            <span>{{ state.colorOffset }}</span>
+        <div class="mb-4">
+          <div
+            class="mb-1 flex items-baseline justify-between font-mono text-[11px]"
+          >
+            <label class="tracking-wide uppercase text-neutral-700" for="lw-co"
+              >Color offset</label
+            >
+            <span class="text-xs text-neutral-900">{{ state.colorOffset }}</span>
           </div>
           <input
             id="lw-co"
@@ -702,14 +751,20 @@ onBeforeUnmount(() => {
             min="0"
             :max="colorOffsetMax"
             step="1"
-            class="slider"
+            class="w-full accent-[#f1b814]"
           />
         </div>
 
-        <div class="field">
-          <div class="field-row">
-            <label for="lw-bump">Bump amount</label>
-            <span>{{ state.bumpAmount.toFixed(2) }}</span>
+        <div class="mb-4">
+          <div
+            class="mb-1 flex items-baseline justify-between font-mono text-[11px]"
+          >
+            <label class="tracking-wide uppercase text-neutral-700" for="lw-bump"
+              >Bump amount</label
+            >
+            <span class="text-xs text-neutral-900">{{
+              state.bumpAmount.toFixed(2)
+            }}</span>
           </div>
           <input
             id="lw-bump"
@@ -718,15 +773,21 @@ onBeforeUnmount(() => {
             min="0"
             max="20"
             step="0.05"
-            class="slider"
+            class="w-full accent-[#f1b814]"
             @input="rebuildTerrain"
           />
         </div>
 
-        <div class="field">
-          <div class="field-row">
-            <label for="lw-bumpt">Bump terrain</label>
-            <span>{{ state.bumpTerrain.toFixed(2) }}</span>
+        <div class="mb-4">
+          <div
+            class="mb-1 flex items-baseline justify-between font-mono text-[11px]"
+          >
+            <label class="tracking-wide uppercase text-neutral-700" for="lw-bumpt"
+              >Bump terrain</label
+            >
+            <span class="text-xs text-neutral-900">{{
+              state.bumpTerrain.toFixed(2)
+            }}</span>
           </div>
           <input
             id="lw-bumpt"
@@ -735,244 +796,56 @@ onBeforeUnmount(() => {
             min="0"
             max="30"
             step="0.05"
-            class="slider"
+            class="w-full accent-[#f1b814]"
             @input="rebuildTerrain"
           />
         </div>
 
-        <div class="btn-row">
-          <button type="button" class="btn" @click="onReshuffle">Reshuffle</button>
-          <button type="button" class="btn" @click="onResetView">Reset view</button>
+        <div class="flex gap-1.5 pt-1">
+          <button
+            type="button"
+            class="flex-1 cursor-pointer rounded-lg border border-neutral-300 bg-neutral-50 py-2 font-mono text-[11px] font-medium uppercase tracking-wider text-neutral-900 hover:border-amber-500 hover:text-amber-800"
+            @click="onReshuffle"
+          >
+            Reshuffle
+          </button>
+          <button
+            type="button"
+            class="flex-1 cursor-pointer rounded-lg border border-neutral-300 bg-neutral-50 py-2 font-mono text-[11px] font-medium uppercase tracking-wider text-neutral-900 hover:border-amber-500 hover:text-amber-800"
+            @click="onResetView"
+          >
+            Reset view
+          </button>
         </div>
 
-        <div class="palette-block">
-          <p class="palette-label">Palette</p>
-          <div class="swatches">
+        <div class="mt-4 border-t border-neutral-200 pt-4">
+          <p class="mb-2 m-0 font-mono text-[10px] uppercase tracking-[0.22em] text-neutral-500">
+            Palette
+          </p>
+          <div class="flex flex-wrap gap-1.5">
             <div
               v-for="(c, i) in rotatedPalette"
               :key="i"
-              class="swatch"
+              class="h-7 w-7 rounded-md border border-black/20"
               :style="{ background: c }"
               :title="`${i}: ${c}`"
             />
           </div>
-          <button type="button" class="btn btn-full" @click="onRandomPalette">
+          <button
+            type="button"
+            class="mt-3 w-full cursor-pointer rounded-lg border border-neutral-300 bg-neutral-50 py-2 font-mono text-[11px] font-medium uppercase tracking-wider text-neutral-900 hover:border-violet-400 hover:text-violet-800"
+            @click="onRandomPalette"
+          >
             Random coherent palette
           </button>
         </div>
       </aside>
     </div>
-    <p v-else class="empty">Landscape JSON missing <code>items</code>.</p>
+    <p v-else class="p-8 text-center font-sans text-neutral-600">
+      Landscape JSON missing
+      <code class="rounded bg-neutral-200/80 px-1 font-mono text-sm text-neutral-800"
+        >items</code
+      >.
+    </p>
   </div>
 </template>
-
-<style scoped>
-.landscape-view {
-  position: relative;
-}
-
-.canvas-wrap {
-  position: relative;
-  width: min(92vw, 960px);
-  aspect-ratio: 16 / 10;
-  max-height: min(76vh, 720px);
-  margin: 0 auto;
-  overflow: hidden;
- 
-  background: #efe7d8;
-}
-
-.scene-mount,
-.labels-mount {
-  position: absolute;
-  inset: 0;
-}
-
-.labels-mount {
-  pointer-events: none;
-}
-
-:deep(.peak-label) {
-  position: relative;
-  transform: translate(-50%, -100%);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-weight: 500;
-  font-size: calc(11px * 1.4);
-  color: rgba(255, 255, 255, 0.95);
-  text-shadow:
-    0 1px 0 rgba(0, 0, 0, 0.45),
-    0 0 6px rgba(0, 0, 0, 0.35);
-  white-space: nowrap;
-  letter-spacing: 0.02em;
-  padding: calc(1px * 1.4) calc(6px * 1.4);
-}
-
-:deep(.peak-label)::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 100%;
-  width: 1px;
-  height: calc(18px * 1.4);
-  background: rgba(255, 255, 255, 0.8);
-  transform: translateX(-0.5px);
-}
-
-.landscape-head {
-  pointer-events: none;
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 2;
-  padding: 1rem 1.25rem;
-}
-
-.title {
-  margin: 0;
-  font-family: ui-monospace, monospace;
-  font-size: 1.375rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: #fff;
-  mix-blend-mode: difference;
-}
-
-.subtitle {
-  margin: 0.15rem 0 0;
-  font-family: ui-monospace, monospace;
-  font-size: 10px;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: #f5f5f5;
-  mix-blend-mode: difference;
-}
-
-.panel {
-  position: absolute;
-  right: 0.75rem;
-  top: 0.75rem;
-  z-index: 3;
-  width: 15rem;
-  max-width: 42vw;
-  padding: 1rem;
-  border-radius: 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-}
-
-.panel-heading {
-  margin-bottom: 1rem;
-}
-
-.panel-title {
-  margin: 0;
-  font-family: ui-monospace, monospace;
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: #1a1a1a;
-}
-
-.field {
-  margin-bottom: 1rem;
-}
-
-.field-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 0.2rem;
-  font-family: ui-monospace, monospace;
-  font-size: 11px;
-}
-
-.field-row label {
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #444;
-}
-
-.field-row span {
-  font-size: 12px;
-  color: #111;
-}
-
-.slider {
-  width: 100%;
-  accent-color: #f1b814;
-}
-
-.btn-row {
-  display: flex;
-  gap: 0.35rem;
-  padding-top: 0.25rem;
-}
-
-.btn {
-  flex: 1;
-  cursor: pointer;
-  border-radius: 0.5rem;
-  border: 1px solid #ddd;
-  background: #fafafa;
-  padding: 0.45rem 0.35rem;
-  font-family: ui-monospace, monospace;
-  font-size: 11px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #111;
-}
-
-.btn:hover {
-  border-color: #e5a617;
-  color: #8a6300;
-}
-
-.btn-full {
-  flex: unset;
-  width: 100%;
-  margin-top: 0.6rem;
-}
-
-.btn-full:hover {
-  border-color: #a855f7;
-  color: #6b21a8;
-}
-
-.palette-block {
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid #e8e8e8;
-}
-
-.palette-label {
-  margin: 0 0 0.35rem;
-  font-family: ui-monospace, monospace;
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: #888;
-}
-
-.swatches {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.swatch {
-  width: 1.65rem;
-  height: 1.65rem;
-  border-radius: 6px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-}
-
-.empty {
-  text-align: center;
-  padding: 2rem;
-  color: #666;
-}
-</style>
