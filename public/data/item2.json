@@ -1,0 +1,20 @@
+{
+  "name": "Brutalism",
+  "gradientColors": [
+    "#C5B597",
+    "#88704B",
+    "#1D4E89",
+    "#E63946",
+    "#F1B814",
+    "#E76F51",
+    "#F1FAEE"
+  ],
+  "items": [
+    { "title": "item1", "height": 100 },
+    { "title": "item2", "height": 80 },
+    { "title": "item3", "height": 60 },
+    { "title": "item4", "height": 40 },
+    { "title": "item5", "height": 20 }
+    
+  ]
+}

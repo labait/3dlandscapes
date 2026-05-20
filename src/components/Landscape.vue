@@ -18,7 +18,7 @@ import {
 
 const props = defineProps({
   /** { name?, title?, gradientColors: string[], items: { title?, name?, height: number }[] } */
-  landscapeJson: {
+  landscapeData: {
     type: Object,
     required: true,
   },
@@ -332,7 +332,7 @@ function cloneLandscapeFromProp(input) {
 }
 
 function syncLandscapeFromProp() {
-  state.landscape = cloneLandscapeFromProp(props.landscapeJson)
+  state.landscape = cloneLandscapeFromProp(props.landscapeData)
   state.positions = shufflePositions(state.landscape.items || [])
   state.colorOffset = 0
   if (!terrainGeom || !terrainUniforms) return
@@ -612,7 +612,7 @@ function onResetView() {
 }
 
 watch(
-  () => props.landscapeJson,
+  () => props.landscapeData,
   () => syncLandscapeFromProp(),
   { deep: true },
 )
